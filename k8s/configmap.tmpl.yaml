@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pixels-production-config-map
+data:
+  MYSQL_DB_HOST: localhost
+  MYSQL_DB_PORT: 3306
+  MYSQL_DB_DATABASE: db
+  MYSQL_DB_USER: user
+  MYSQL_DB_PASS: password

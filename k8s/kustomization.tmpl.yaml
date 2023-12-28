@@ -1,0 +1,8 @@
+resources:
+- configmap.yaml
+- deployment.yaml
+
+images:
+- name: amazonaws.com/fiap-pixels-payment
+  newName: ${ECR_REPOSITORY}
+  newTag: ${IMAGE_TAG}

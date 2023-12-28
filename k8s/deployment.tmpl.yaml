@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiap-app-production-deployment
+  labels: 
+    app: "fiap-app-production-deployment"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fiap-app-production-pod
+  template:
+    metadata:
+      labels:
+        app: fiap-app-production-pod
+    spec:
+      containers:
+        - name: fiap-app-production
+          image: ENDPOINT_ECR:latest
+          ports:
+            - containerPort: 8082
+          envFrom:
+            - configMapRef:
+                name: pixels-production-config-map

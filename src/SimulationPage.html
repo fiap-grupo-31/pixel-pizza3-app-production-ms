@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Teste</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <style>
+        .lds-ellipsis {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+        }
+        .lds-ellipsis div {
+        position: absolute;
+        top: 33px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: #706f6f;
+        animation-timing-function: cubic-bezier(0, 1, 1, 0);
+        }
+        .lds-ellipsis div:nth-child(1) {
+        left: 8px;
+        animation: lds-ellipsis1 0.6s infinite;
+        }
+        .lds-ellipsis div:nth-child(2) {
+        left: 8px;
+        animation: lds-ellipsis2 0.6s infinite;
+        }
+        .lds-ellipsis div:nth-child(3) {
+        left: 32px;
+        animation: lds-ellipsis2 0.6s infinite;
+        }
+        .lds-ellipsis div:nth-child(4) {
+        left: 56px;
+        animation: lds-ellipsis3 0.6s infinite;
+        }
+        @keyframes lds-ellipsis1 {
+        0% {
+            transform: scale(0);
+        }
+        100% {
+            transform: scale(1);
+        }
+        }
+        @keyframes lds-ellipsis3 {
+        0% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(0);
+        }
+        }
+        @keyframes lds-ellipsis2 {
+        0% {
+            transform: translate(0, 0);
+        }
+        100% {
+            transform: translate(24px, 0);
+        }
+        }
+
+        #route,
+        #token{
+
+            width: 50%;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+        }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">Simulador de teste</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Teste</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/api-docs" target="_blank">Documentação</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container my-5">
+        <div style="padding: 20px;text-align: center;">
+            Este simulador de teste executa as requisições da documentação para entrega do Tech Challenge - Fase 2.<br>Acima também é possivel visualizar a documentação em Swagger UI<br><br>
+
+            <input type="text" id="route" value=""><br><br>
+            <input type="text" id="token" value=""><br><br>
+
+            <button type="button" class="btn btn-primary start" data-type="fake">Iniciar simulação de teste com requisição real</button>
+            <button type="button" class="btn btn-primary start" data-type="mercadopago">Iniciar simulação de teste com requisição real para mercadopago</button>
+        </div>
+
+
+        <div id="simulation" style="padding: 20px;">
+            
+        </div>
+        <div id="pace" style="padding: 20px;text-align: center;">
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        </div>
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function(){
+            var postMeli = '';
+            let uriDefault = `${location.protocol}//${location.host}/`;
+            let token = '';
+
+            $("#route").val(uriDefault);
+
+            var fases = {
+
+            };
+
+            const pace = (check) => {
+                if( check ){
+                    return $("#pace").show();
+                }
+                return $("#pace").hide();
+            }
+
+            pace(false);
+
+            function scrollToBottom() {
+                const pageHeight = document.body.scrollHeight;
+                
+                window.scrollTo({
+                    behavior: 'smooth',
+                    top: pageHeight
+                });
+            }
+
+
+            const http = {
+                get: async (url, header) => {
+                    return $.ajax({
+                        url: url,
+                        method: 'GET',
+                        headers: header,
+                        success: function(response) {
+                            return response;
+                        },
+                        error: function(error) {
+                            return response;
+                        }
+                    });
+                },
+                delete: async (url, header) => {
+                    return $.ajax({
+                        url: url,
+                        method: 'DELETE',
+                        headers: header,
+                        success: function(response) {
+                            return response;
+                        },
+                        error: function(error) {
+                            return response;
+                        }
+                    });
+                },
+                post: async (url, data, header) => {
+                    return $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        headers: header,
+                        success: function(response) {
+                            return response;
+                        },
+                        error: function(error) {
+                            return response;
+                        }
+                    });
+                },
+                put: async (url, data, header) => {
+                    return $.ajax({
+                        url: url,
+                        method: 'PUT',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        headers: header,
+                        success: function(response) {
+                            return response;
+                        },
+                        error: function(error) {
+                            return response;
+                        }
+                    });
+                }
+            }
+
+            const setLog = (level, log) => {
+                $('#simulation').append(`
+                    <div class="alert alert-${level}" role="alert">
+                        ${log}
+                    </div>
+                `)
+                scrollToBottom();
+            }
+
+            const sleep = async (ms) => {
+                pace(true);
+                scrollToBottom();
+                await new Promise(resolve => setTimeout(resolve, ms));
+                pace(false);
+                return true;
+            }
+
+            const simulation = async ( broker ) => {
+                let productsInsert = [];
+                uriDefault = $("#route").val();
+                token = $("#token").val();
+
+                await sleep(1000);
+                // CADASTRA PRODUTO 1
+                const setProduct1 = await http.post( `${uriDefault}products`, {
+                                                "name": "Cheeseburger (P)",
+                                                "price": 11.90,
+                                                "category": "SNACK",
+                                                "description": "Hamburger de 70g (pão, molho rosé, queijo tipo cheddar, alface e tomate)"
+                                            }, {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+                
+                if( !setProduct1?.data?._id )
+                    return setLog('danger', `Falha ao cadastrar produto 1`)
+        
+                setLog('success', `
+                    <h4><b>Produto 1 cadastrado</b></h4>
+                    <pre><code>Request: POST ${uriDefault}products</code></pre>
+                    <pre><code>Response: ${JSON.stringify(setProduct1?.data, undefined, 2)}</code></pre>
+                `)
+                productsInsert.push(setProduct1?.data);
+
+                await sleep(1000);
+                
+                // CADASTRA PRODUTO 2
+                const setProduct2 = await http.post( `${uriDefault}products`, {
+                                                "name": "Suco de uva",
+                                                "price": 11.90,
+                                                "category": "DRINK",
+                                                "description": "Suco"
+                                            } , {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+                
+                if( !setProduct2?.data?._id )
+                    return setLog('danger', `Falha ao cadastrar produto 2`)
+        
+                setLog('success', `
+                    <h4><b>Produto 2 cadastrado</b></h4>
+                    <pre><code>Request: POST ${uriDefault}products</code></pre>
+                    <pre><code>Response: ${JSON.stringify(setProduct2?.data, undefined, 2)}</code></pre>
+                `)
+                productsInsert.push(setProduct2?.data);
+
+                await sleep(1000);
+
+                // CADASTRA PRODUTO 3
+                const setProduct3 = await http.post( `${uriDefault}products`, {
+                                                "name": "Suco de maças",
+                                                "price": 10.90,
+                                                "category": "DRINK",
+                                                "description": "Suco"
+                                            }, {
+                                                'Authorization': 'Bearer '+token
+                                            }  )
+
+                if( !setProduct3?.data?._id )
+                    return setLog('danger', `Falha ao cadastrar produto 3`)
+
+                setLog('success', `
+                    <h4><b>Produto 3 cadastrado</b></h4>
+                    <pre><code>Request: POST ${uriDefault}products</code></pre>
+                    <pre><code>Response: ${JSON.stringify(setProduct3?.data, undefined, 2)}</code></pre>
+                `)
+                // productsInsert.push(setProduct3?.data);
+
+                await sleep(1000);
+
+                // ATUALIZA PRODUTO 1
+                const setProduct4 = await http.put( `${uriDefault}products/${setProduct1?.data?._id}`,{
+                                                    "name": "Cheeseburger (P)",
+                                                    "price": 20.90,
+                                                    "category": "SNACK",
+                                                    "description": "Hamburger de 70g (pão, molho rosé, queijo tipo cheddar, alface e tomate)"
+                                                } , {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !setProduct4?.data?._id )
+                    return setLog('danger', `Falha ao atualizar produto 1`)
+
+                setLog('warning', `
+                    <h4><b>Produto 1 atualizado</b></h4>
+                    <pre><code>Request: PUT ${uriDefault}products/${setProduct1?.data?._id}</code></pre>
+                    <pre><code>Response: ${JSON.stringify(setProduct4?.data, undefined, 2)}</code></pre>
+                `)
+                productsInsert[0] = setProduct4?.data;
+
+                await sleep(1000);
+
+                // REMOVE PRODUTO 3
+                const removeProduct3 = await http.delete( `${uriDefault}products/${setProduct3?.data?._id}`, {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( removeProduct3?.status != "success" )
+                    return setLog('danger', `Falha ao remove produto 3`)
+
+                setLog('danger', `
+                    <h4><b>Produto 3 removido</b></h4>
+                    <pre><code>Request: DELETE ${uriDefault}products/${setProduct3?.data?._id}</code></pre>
+                    <pre><code>Response: ${JSON.stringify(removeProduct3?.data, undefined, 2)}</code></pre>
+                `)
+
+
+                await sleep(1000);
+
+                // BUSCA TODOS OS PRODUTOS
+                const getProducts = await http.get( `${uriDefault}products`, {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !getProducts?.data )
+                    return setLog('danger', `Falha buscar produtos`)
+
+                setLog('primary', `
+                    <h4><b>Retorno de todos os produtos</b></h4>
+                    <pre><code>Request: GET ${uriDefault}products</code></pre>
+                    <pre><code>Response:${JSON.stringify(getProducts?.data, undefined, 2)}</code></pre>
+                `)
+
+
+                await sleep(1000);
+
+                // BUSCA 1 OS PRODUTOS
+                const getProduct = await http.get( `${uriDefault}products/${productsInsert[0]._id}`, {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !getProduct?.data )
+                    return setLog('danger', `Falha buscar 1 produto`)
+
+                setLog('primary', `
+                    <h4><b>Retorno de 1 produto</b></h4>
+                    <pre><code>Request: GET ${uriDefault}products/${productsInsert[0]._id}</code></pre>
+                    <pre><code>Response:${JSON.stringify(getProduct?.data, undefined, 2)}</code></pre>
+                `)
+
+
+                await sleep(1000);
+
+                // BUSCA OS PRODUTOS POR CATEGORIA
+                const getProductCategory = await http.get( `${uriDefault}products?category=SNACK`, {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !getProductCategory?.data )
+                    return setLog('danger', `Falha buscar 1 produto`)
+
+                setLog('primary', `
+                    <h4><b>Retorno de produtos por categoria SNACK</b></h4>
+                    <pre><code>Request: GET ${uriDefault}products?category=SNACK</code></pre>
+                    <pre><code>Response:${JSON.stringify(getProductCategory?.data, undefined, 2)}</code></pre>
+                `)
+
+                await sleep(1000);
+                // CADASTRA PRODUTO IMAGEM 1
+                const setProduct1Image = await http.post( `${uriDefault}products/${setProduct1?.data?._id}/images`, {
+                                                    "name": "Principal",
+                                                    "size": "10",
+                                                    "type": "SNACK",
+                                                    "base64": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwkHBgoJCA.....L1ejMzMzMzMzMzMzMzMzMzM9WZn/d/9k="
+                                                } , {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !setProduct1Image?.data?._id )
+                    return setLog('danger', `Falha ao cadastrar imagem no produto 1`)
+
+                setLog('success', `
+                    <h4><b>Imagem do Produto 1 cadastrado</b></h4>
+                    <pre><code>Request: POST ${uriDefault}products/${setProduct1?.data?._id}/images</code></pre>
+                    <pre><code>Response:${JSON.stringify(setProduct1Image?.data, undefined, 2)}</code></pre>
+                `)
+                
+
+                await sleep(1000);
+
+                // ATUALIZA PRODUTO 1
+                const setCustomer = await http.post( `${uriDefault}customers`,{
+                                                        "name": "Grupo 31 Cliente",
+                                                        "mail": "",
+                                                        "cpf": "44445337064",
+                                                        "birthdate": "1986-04-04",
+                                                        "subscription": "Informação adicional"
+                                                    } , {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !setCustomer?.data?._id )
+                    return setLog('danger', `Falha ao atualizar produto 1`)
+
+                setLog('warning', `
+                    <h4><b>Cliente 1 cadastrado</b></h4>
+                    <pre><code>Request: POST ${uriDefault}customers</code></pre>
+                    <pre><code>Response:${JSON.stringify(setCustomer?.data, undefined, 2)}</code></pre>
+                `)
+
+                await sleep(1000);
+
+                // BUSCA TODOS OS clientes
+                const getCustomers = await http.get( `${uriDefault}customers`, {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !getCustomers?.data )
+                    return setLog('danger', `Falha buscar clientes`)
+
+                setLog('primary', `
+                    <h4><b>Retorno de todos os clientes</b></h4>
+                    <pre><code>Request: GET ${uriDefault}customers</code></pre>
+                    <pre><code>Response:${JSON.stringify(getCustomers?.data, undefined, 2)}</code></pre>
+                `)
+
+                await sleep(1000);
+
+                // BUSCA 1 OS CLIENTE POR CPF
+                const getCustomer = await http.get( `${uriDefault}customers/?cpf=44445337064`, {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !getCustomer?.data )
+                    return setLog('danger', `Falha buscar 1 cliente`)
+
+                setLog('primary', `
+                    <h4><b>Retorno de 1 cliente por cpf</b></h4>
+                    <pre><code>Request: GET ${uriDefault}customers/?cpf=44445337064</code></pre>
+                    <pre><code>Response:${JSON.stringify(getCustomer?.data, undefined, 2)}</code></pre>
+                `)
+
+                await sleep(1000);
+
+                // CRIA UM PEDIDO
+                let order = [];
+                for (const key in productsInsert) {
+                    if (Object.hasOwnProperty.call(productsInsert, key)) {
+                        const element = productsInsert[key];
+
+                        order.push({
+                            productId: element._id,
+                            quantity: parseInt(Math.random() * (4 - 1) + 1),
+                            obs: `Sem observação`,
+                        })
+                        
+                    }
+                }
+
+                const setOrder = await http.post( `${uriDefault}orders`,{
+                                                    "customerId": getCustomer?.data?._id,
+                                                    "orderItens": order
+                                                }, {
+                                                'Authorization': 'Bearer '+token
+                                            }  )
+
+                if( !setOrder?.data?._id )
+                    return setLog('danger', `Falha ao criar pedido`)
+
+                setLog('warning', `
+                    <h4><b>Pedido cadastrado</b></h4>
+                    <pre><code>Request: POST ${uriDefault}orders</code></pre>
+                    <pre><code>Response:${JSON.stringify(setOrder?.data, undefined, 2)}</code></pre>
+                `)
+
+                await sleep(1000);
+
+                // BUSCA O PEDIDO POR ID
+                const getOrder = await http.get( `${uriDefault}orders/${setOrder?.data?._id}`, {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !getOrder?.data )
+                    return setLog('danger', `Falha buscar pedido por id`)
+
+                setLog('primary', `
+                    <h4><b>Retorno do pedido por id</b></h4>
+                    <pre><code>Request: GET ${uriDefault}orders/${setOrder?.data?._id}</code></pre>
+                    <pre><code>Response:${JSON.stringify(getOrder?.data, undefined, 2)}</code></pre>
+                `)
+
+                await sleep(1000);
+
+                // BUSCA O PEDIDO POR FASE
+                const getOrderStatus = await http.get( `${uriDefault}orders/status/RECEIVE`, {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                if( !getOrderStatus?.data )
+                    return setLog('danger', `Falha buscar pedido por status`)
+
+                setLog('primary', `
+                    <h4><b>Retorno do pedido por fase (RECEIVE)</b></h4>
+                    <pre><code>Request: GET ${uriDefault}orders/status/RECEIVE</code></pre>
+                    <pre><code>Response:${JSON.stringify(getOrderStatus?.data, undefined, 2)}</code></pre>
+                `)
+
+                await sleep(1000);
+
+                // CRIA PEDIDO DE PARAMENTO FAKE
+                const setPayment = await http.post( `${uriDefault}payment`,{
+                                                    "orderId": setOrder?.data?._id,
+                                                    "broker": broker
+                                                }, {
+                                                'Authorization': 'Bearer '+token
+                                            }  )
+
+                if( !setPayment?.data?._id )
+                    return setLog('danger', `Falha ao criar pedido de pagamento`)
+
+                setLog('warning', `
+                    <h4><b>Pedido de pagamento feito (retorno do url de callback)</b></h4>
+                    <pre><code>Request: POST ${uriDefault}payment</code></pre>
+                    <pre><code>Response:${JSON.stringify(setPayment?.data, undefined, 2)}</code></pre>
+                `)
+
+                await sleep(1000);
+
+                if( broker == 'fake' ){
+                    // EFETUADO POST DE CALLBACK
+                    const setCallback = await http.post( `${setPayment?.data?._webhook}`,{
+                                                        "status": 'APPROVED',
+                                                        "description": broker
+                                                    } , {
+                                                'Authorization': 'Bearer '+token
+                                            } )
+
+                    if( !setCallback?.status )
+                        return setLog('danger', `Falha ao criar pedido de pagamento`)
+
+                    setLog('warning', `
+                        <h4><b>Callback de APPROVED (${setPayment?.data?._webhook})</b></h4>
+                        <pre><code>Request: POST ${setPayment?.data?._webhook}</code></pre>
+                        <pre><code>Response:${JSON.stringify(setCallback?.data, undefined, 2)}</code></pre>
+                    `)
+                }else{
+                    postMeli = setPayment?.data?._webhook;
+                    setLog('warning', `
+                            <h4><b>Enviar o callback do webhook.site após o pagamento do PIX para o endereço de callback mercadopago acima</b></h4>
+                            <br><h5>Caso queira apenas simular o pagamento, envie a requisição abaixo via curl, postman, ou <a href="#" id="fakepg">clique aqui</a> para enviar um fake objeto de pagamento.</h5>
+                            <pre><code> curl --location '${setPayment?.data?._webhook}' \
+    --header 'Content-Type: application/json' \
+    --data '{
+        "action": "payment.created",
+        "api_version": "v1",
+        "data": {
+            "id": "63050388528"
+        },
+        "date_created": "2023-09-01T22:13:11Z",
+        "id": 107339935122,
+        "live_mode": true,
+        "type": "payment",
+        "user_id": "157842011"
+    }' </code></pre>
+                        `)
+                }
+                // const data = await http.get( `${uriDefault}products` )
+            }
+
+
+            $("body")
+            .on('click', '.start', function() {
+                $('.start').hide();
+                simulation( $(this).attr('data-type') );
+            })
+            .on('click', '#fakepg', async function(){
+                const setCallback = await http.post( `${postMeli}`, {
+                        "action": "payment.created",
+                        "api_version": "v1",
+                        "data": {
+                            "id": "63050388528"
+                        },
+                        "date_created": "2023-09-01T22:13:11Z",
+                        "id": 107339935122,
+                        "live_mode": true,
+                        "type": "payment",
+                        "user_id": "157842011"
+                    }, {
+                            'Authorization': 'Bearer '+token
+                        } )
+
+                if( !setCallback?.data?._id )
+                    return setLog('danger', `Falha ao criar pedido de pagamento`)
+
+                setLog('warning', `
+                    <h4><b>Callback de APPROVED (${postMeli})</b></h4>
+                    <pre><code>${JSON.stringify(setCallback?.data, undefined, 2)}</code></pre>
+                `)
+            })
+        })
+
+    </script>
+  </body>
+</html>
