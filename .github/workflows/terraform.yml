@@ -104,6 +104,8 @@ jobs:
       run: |
         export ENDPOINT_DB=$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'fiap-productiondb'].Endpoint.Address" --output text)
         echo $ENDPOINT_DB
+        export ENDPOINT_ECR=$(aws ecr describe-repositories --repository-names fiap-pixels-production --query 'repositories[0].repositoryUri' --output text)
+        echo $ENDPOINT_ECR
         cp k8s/configmap.tmpl.yaml k8s/configmap.yaml
         sed -i 's|REPLACE_DB_STRING_CLOUD|'"$ENDPOINT_DB"'|g' k8s/configmap.yaml
         cat k8s/configmap.yaml
