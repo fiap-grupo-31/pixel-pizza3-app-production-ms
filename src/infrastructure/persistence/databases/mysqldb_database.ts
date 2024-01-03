@@ -28,6 +28,14 @@ export class MysqldbConnection implements DbConnection {
       MYSQL_DB_STRING_CLOUD
     } = process.env;
 
+    console.log({
+      database: MYSQL_DB_DATABASE,
+      username: MYSQL_DB_USER,
+      password: MYSQL_DB_PASS,
+      dialect: 'mysql',
+      host: MYSQL_DB_HOST,
+      port: parseInt(MYSQL_DB_PORT ?? '3306')
+    })
     sequelize = new Sequelize({
       database: MYSQL_DB_DATABASE,
       username: MYSQL_DB_USER,
