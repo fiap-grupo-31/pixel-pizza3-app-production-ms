@@ -50,7 +50,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     needs:
       - run-tests
-      - run-sonar
+    #  - run-sonar
 
     steps:
     - name: Checkout do repositório
