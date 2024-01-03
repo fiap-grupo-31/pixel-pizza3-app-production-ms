@@ -18,7 +18,7 @@ spec:
         - name: fiap-app-production
           image: ENDPOINT_ECR:latest
           ports:
-            - containerPort: 8082
+            - containerPort: 8080
           envFrom:
             - configMapRef:
                 name: pixels-production-config-map

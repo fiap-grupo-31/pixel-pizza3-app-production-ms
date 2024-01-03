@@ -4,7 +4,7 @@ metadata:
   name: pixels-production-config-map
 data:
   MYSQL_DB_HOST: REPLACE_DB_STRING_CLOUD
-  MYSQL_DB_PORT: 3306
+  MYSQL_DB_PORT: "3306"
   MYSQL_DB_DATABASE: db
   MYSQL_DB_USER: admin
   MYSQL_DB_PASS: XMrGrqVfew4YSDeQ
