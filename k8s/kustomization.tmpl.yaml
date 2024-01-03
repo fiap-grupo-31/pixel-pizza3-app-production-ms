@@ -3,6 +3,6 @@ resources:
 - deployment.yaml
 
 images:
-- name: amazonaws.com/fiap-pixels-payment
+- name: amazonaws.com/fiap-pixels-production
   newName: ${ECR_REPOSITORY}
   newTag: ${IMAGE_TAG}
