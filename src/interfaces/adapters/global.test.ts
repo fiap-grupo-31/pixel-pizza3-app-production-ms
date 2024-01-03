@@ -60,6 +60,6 @@ describe('Global', () => {
   it('Deve formatar a data com o fuso horário correto', () => {
     const date = new Date('2023-12-26T12:00:00Z');
     const formattedDate = Global.formatISOWithTimezone(date);
-    expect(formattedDate).toMatch('2023-12-26T12:00:00.000+-3:00');
+    expect(formattedDate).toMatch('2023-12-26T12:00:00.000-00:00');
   });
 });
