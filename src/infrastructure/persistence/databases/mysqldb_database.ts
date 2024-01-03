@@ -48,6 +48,12 @@ export class MysqldbConnection implements DbConnection {
     sequelize
       .authenticate()
       .then(async () => {
+        sequelize.query(`CREATE DATABASE IF NOT EXISTS ${MYSQL_DB_DATABASE};`).then(() => {
+          console.log('Banco de dados criado ou já existente.');
+        }).catch((err: any) => {
+          console.error('Erro ao criar o banco de dados:', err);
+        });
+
         sequelize.addModels([Production]);
         try {
           await sequelize.sync({ force: false });
