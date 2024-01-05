@@ -101,13 +101,15 @@ jobs:
         sudo mv kubectl /usr/local/bin/
         aws eks update-kubeconfig --name Fiap_Pixels-Eks
 
-    - name: 'Deploy Kong via Helm'
-      uses: 'deliverybot/helm@master'
-      with:
-        namespace: 'kong'
-        chart: 'kong/kong'
-        repo: 'https://charts.konghq.com'
-        repo-alias: kong
+    - name: Instala o Helm e Instala o kong no kubernets (caso ele já exista não instala)
+      run: |
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+        helm repo add kong https://charts.konghq.com
+        helm repo update
+        if ! helm install kong kong/kong --namespace kong; then
+          echo "Helm install failed, continuing..."
+          exit 0
+        fi
 
     - name: Obtem ENDPOINT_DB RdsProductionDB
       run: |
@@ -115,7 +117,7 @@ jobs:
         echo $ENDPOINT_DB
         export ENDPOINT_ECR=$(aws ecr describe-repositories --repository-names fiap-pixels-production --query 'repositories[0].repositoryUri' --output text)
         echo $ENDPOINT_ECR
-        export ENDPOINT_KONG=$(kubectl get svc -n kong -o=jsonpath='{range .items[?(@.spec.type=="LoadBalancer")]}{.status.loadBalancer.ingress[0].hostname}{"\n"}{end}' | head -1)
+        export ENDPOINT_KONG=$(export ENDPOINT_KONG=$(kubectl get svc -n kong -o=jsonpath='{range .items[?(@.metadata.name=="kong-kong-proxy")]}{.status.loadBalancer.ingress[0].hostname}{"\n"}{end}'))
         echo $ENDPOINT_KONG
         cp k8s/configmap.tmpl.yaml k8s/configmap.yaml
         sed -i 's|REPLACE_DB_STRING_CLOUD|'"$ENDPOINT_DB"'|g' k8s/configmap.yaml
