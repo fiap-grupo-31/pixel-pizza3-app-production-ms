@@ -101,6 +101,14 @@ jobs:
         sudo mv kubectl /usr/local/bin/
         aws eks update-kubeconfig --name Fiap_Pixels-Eks
 
+    - name: 'Deploy Kong via Helm'
+      uses: 'deliverybot/helm@v1'
+      with:
+        namespace: 'kong'
+        chart: 'kong/kong'
+        repo: 'https://charts.konghq.com'
+        repo-alias: kong
+
     - name: Obtem ENDPOINT_DB RdsProductionDB
       run: |
         export ENDPOINT_DB=$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'fiap-productiondb'].Endpoint.Address" --output text)
