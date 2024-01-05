@@ -6,6 +6,7 @@ dotenv.config({
   path: '.env'
 })
 
+console.log('API ORDER', process.env.API_ORDER_BASEURL)
 const dbconnectionMysql = new MysqldbConnection();
 const fastfoodApp = new FastfoodApp(dbconnectionMysql);
 fastfoodApp.start();
