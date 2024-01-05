@@ -101,25 +101,6 @@ jobs:
         sudo mv kubectl /usr/local/bin/
         aws eks update-kubeconfig --name Fiap_Pixels-Eks
 
-    - name: Check if Kong is installed
-      id: check_kong
-      run: |
-        existing_release=$(helm list -n kong -o json | jq -r '.[].name' | grep '^kong-proxy-')
-        if [ -z "$existing_release" ]; then
-          echo "Kong is not installed. Proceeding with installation."
-          echo "::set-output name=install_kong::true"
-        else
-          echo "Kong is already installed. Skipping installation."
-          echo "::set-output name=install_kong::false"
-        fi
-
-    - name: Install Kong using Helm
-      if: steps.check_kong.outputs.install_kong == 'true'
-      run: |
-        helm repo add kong https://charts.konghq.com
-        helm repo update
-        helm install kong/kong --namespace kong --generate-name --set ingressController.installCRDs=false
-
     - name: Obtem ENDPOINT_DB RdsProductionDB
       run: |
         export ENDPOINT_DB=$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'fiap-productiondb'].Endpoint.Address" --output text)
