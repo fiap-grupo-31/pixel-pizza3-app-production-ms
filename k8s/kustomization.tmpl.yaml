@@ -1,6 +1,8 @@
 resources:
 - configmap.yaml
 - deployment.yaml
+- service.yaml
+- kong.yaml
 
 images:
 - name: amazonaws.com/fiap-pixels-production

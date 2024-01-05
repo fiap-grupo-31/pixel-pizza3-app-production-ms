@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: fiap-app-production
-          image: ENDPOINT_ECR:latest
+          image: 181793618803.dkr.ecr.us-east-1.amazonaws.com/fiap-pixels-production:latest
           ports:
             - containerPort: 8080
           envFrom:
