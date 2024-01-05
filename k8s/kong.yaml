@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: apis
+  name: apis3
   annotations:
     kubernetes.io/ingress.class: "kong"
     konghq.com/strip-path: "true"
@@ -10,7 +10,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /api/v1.0/ms1/
+          - path: /api/v1.0/ms3/
             pathType: Prefix
             backend:
               service:

@@ -1,4 +1,4 @@
-name: Implantação Aplicação em AWS EKS
+name: Implantação Aplicação - Production em AWS EKS
 
 on:
   push:
@@ -111,13 +111,13 @@ jobs:
           exit 0
         fi
 
-    - name: Obtem ENDPOINT_DB RdsProductionDB
+    - name: Obtem ENDPOINTS e Trata ConfigMap e arquivos de deployment
       run: |
         export ENDPOINT_DB=$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'fiap-productiondb'].Endpoint.Address" --output text)
         echo $ENDPOINT_DB
         export ENDPOINT_ECR=$(aws ecr describe-repositories --repository-names fiap-pixels-production --query 'repositories[0].repositoryUri' --output text)
         echo $ENDPOINT_ECR
-        export ENDPOINT_KONG=$(export ENDPOINT_KONG=$(kubectl get svc -n kong -o=jsonpath='{range .items[?(@.metadata.name=="kong-kong-proxy")]}{.status.loadBalancer.ingress[0].hostname}{"\n"}{end}'))
+        export ENDPOINT_KONG=$(kubectl get svc -n kong -o=jsonpath='{range .items[?(@.metadata.name=="kong-kong-proxy")]}{.status.loadBalancer.ingress[0].hostname}{"\n"}{end}')
         echo $ENDPOINT_KONG
         cp k8s/configmap.tmpl.yaml k8s/configmap.yaml
         sed -i 's|REPLACE_DB_STRING_CLOUD|'"$ENDPOINT_DB"'|g' k8s/configmap.yaml
