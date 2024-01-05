@@ -102,7 +102,7 @@ jobs:
         aws eks update-kubeconfig --name Fiap_Pixels-Eks
 
     - name: 'Deploy Kong via Helm'
-      uses: 'deliverybot/helm@v1'
+      uses: 'deliverybot/helm@master'
       with:
         namespace: 'kong'
         chart: 'kong/kong'
