@@ -51,7 +51,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     needs:
       - run-tests
-      - run-sonar
+      - run-sonarqube
 
     steps:
     - name: Checkout do repositório
