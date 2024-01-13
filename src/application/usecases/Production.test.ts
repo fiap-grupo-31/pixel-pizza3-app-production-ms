@@ -123,8 +123,8 @@ describe('ProductionUseCases', () => {
       );
       // Se chegar aqui, o teste falhará
       expect(true).toBe(false); // Garante que o teste falhe se o código chegar aqui
-    } catch (error) {
-      expect(error).toBe(expectedError);
+    } catch (error: any) {
+      expect(error.message).toBe('failure insert');
     }
   });
 
