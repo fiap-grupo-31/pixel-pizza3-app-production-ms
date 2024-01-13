@@ -49,7 +49,7 @@ class ProductionUseCases {
         payments.updated_at
       );
     } catch (error) {
-      throw ('failure insert')
+      throw new Error('failure insert');
     }
   }
 
@@ -82,7 +82,7 @@ class ProductionUseCases {
 
       return production
     } catch (error) {
-      throw ('failure update')
+      throw new Error('failure update');
     }
   }
 }
