@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "jest --coverage",
-    "build": "rimraf dist/ && tsc && cp src/SimulationPage.html dist/ && cp global-bundle.pem dist/",
+    "build": "rimraf dist/ && tsc && cp global-bundle.pem dist/",
     "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts"
   },
   "author": "",

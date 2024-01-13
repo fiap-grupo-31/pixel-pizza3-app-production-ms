@@ -36,17 +36,24 @@ jobs:
       - run-tests
 
     steps:
-      - name: Checkout do repositório
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-  
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        continue-on-error: false
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    - name: Checkout do repositório
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      continue-on-error: false
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    - name: Valida Quality Gate status do SonarQube
+      run: |
+        if [ "$(curl -s -u $SONAR_TOKEN: $SONAR_HOST_URL/api/qualitygates/project_status?projectKey=fiap-techg31_pixel-pizza3-app-production-ms | jq -r '.projectStatus.status')" != "OK" ]; then
+          echo "Quality Gate failed. Exiting with non-zero status."
+          exit 1
+        fi
     
   build:
     runs-on: ubuntu-latest

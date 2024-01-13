@@ -68,7 +68,9 @@ class ProductionUseCases {
       null,
       null
     );
-    if (!entity.statusCheck) return await Promise.reject('production inválid');
+    if (!entity.statusCheck) {
+      throw new Error('production inválid');
+    }
 
     try {
       await paymentsGateway.update(
@@ -76,13 +78,15 @@ class ProductionUseCases {
         status
       );
 
-      const production = await paymentsGateway.findId(id);
+      const production: any = await paymentsGateway.findId(id);
 
-      await orderApiAdapter.updateOrder(production?.orderId ?? '', status)
+      if (production?.orderId) {
+        await orderApiAdapter.updateOrder(production.orderId, status)
+      }
 
       return production
-    } catch (error) {
-      throw new Error('failure update');
+    } catch (error: any) {
+      throw new Error(error.message ? error.message : 'failure update');
     }
   }
 }

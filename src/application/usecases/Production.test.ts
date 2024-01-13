@@ -24,14 +24,14 @@ const mockPaymentDataDefault = {
   updated_at: ''
 };
 
-describe('ProductionUseCases', () => {
+describe('Produção', () => {
   // Limpa os mocks após cada teste
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   // Teste para getPaymentsAll
-  it('Deve buscar todos os pedidos', async () => {
+  it('Deve retornar todos os pedidos em produção', async () => {
     mockProductionGateway.findAll.mockResolvedValueOnce([
     ]);
 
@@ -42,7 +42,7 @@ describe('ProductionUseCases', () => {
   });
 
   // Teste para getPaymentsByReference Vazia
-  it('Deve retornar uma lista de pedidos vazio', async () => {
+  it('Deve retornar uma lista vazia de pedidos em produção', async () => {
     mockProductionGateway.find.mockResolvedValueOnce([
     ]);
 
@@ -56,7 +56,7 @@ describe('ProductionUseCases', () => {
   });
 
   // Teste para getPaymentsByReference com conteúdo
-  it('Deve buscar um pedido por referencia ( status )', async () => {
+  it('Deve retornar um pedido por referencia ( status )', async () => {
     mockProductionGateway.find.mockResolvedValueOnce([
     ]);
 
@@ -73,7 +73,7 @@ describe('ProductionUseCases', () => {
   });
 
   // Teste para getPaymentsById
-  it('Deve buscar um pedido por id', async () => {
+  it('Deve retornar um pedido em produção por id', async () => {
     const mockPayment = {
     };
     mockProductionGateway.findId.mockResolvedValueOnce(mockPayment);
@@ -87,7 +87,7 @@ describe('ProductionUseCases', () => {
   });
 
   // Teste para setPayment
-  it('Deve inserir um pedido', async () => {
+  it('Deve retornar um pedido para produção', async () => {
     const mockPaymentData = mockPaymentDataDefault;
     mockProductionGateway.persist.mockResolvedValueOnce(mockPaymentData);
 
@@ -108,7 +108,7 @@ describe('ProductionUseCases', () => {
     expect(result).toEqual(new Production(1, '111', '2', 'teste', 'WAITING', '', ''));
   });
 
-  it('Deve gerar uma exceção ao tentar inserir um pedido', async () => {
+  it('Deve retornar uma exceção ao tentar inserir um pedido', async () => {
     const expectedError = 'failure insert';
     // Simular uma falha ao persistir o pagamento
     mockProductionGateway.persist.mockRejectedValueOnce(expectedError);
@@ -129,7 +129,7 @@ describe('ProductionUseCases', () => {
   });
 
   // Teste para updatePayment
-  it('Deve atualizar o pedido', async () => {
+  it('Deve atualizar o pedido em produção', async () => {
     const mockUpdatedPayment = {
       id: 2,
       orderId: '123',
@@ -160,7 +160,7 @@ describe('ProductionUseCases', () => {
   });
 
   // Teste para updatePayment
-  it('Deve causar uma excessão atualizar o pedido', async () => {
+  it('Deve retornar uma exceção atualizar o pedido em produção com status de production invalido', async () => {
     jest.spyOn(mockOrderApiAdapter, 'updateOrder').mockResolvedValueOnce(true);
 
     try {
@@ -171,7 +171,8 @@ describe('ProductionUseCases', () => {
         mockProductionGateway
       );
       expect(mockProductionGateway.update).toThrow('production inválid');
-    } catch (error) {
+    } catch (error: any) {
+      expect(error.message).toBe('production inválid');
     }
   });
 });
