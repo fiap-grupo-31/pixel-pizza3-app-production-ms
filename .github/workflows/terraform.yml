@@ -38,6 +38,8 @@ jobs:
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
   
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master

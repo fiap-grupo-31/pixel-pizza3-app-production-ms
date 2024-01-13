@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance, type AxiosResponse, AxiosError } from 'axios';
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 
 export interface OrderApiAdapterInterface {
   updateOrder: (orderId: string, status: string) => Promise<boolean>
@@ -7,7 +7,7 @@ export interface OrderApiAdapterInterface {
 export class OrderApiAdapter implements OrderApiAdapterInterface {
   private readonly axiosInstance: AxiosInstance;
 
-  constructor (baseURL: string, instance: AxiosInstance | any) {
+  constructor (baseURL: string, instance: any) {
     this.axiosInstance = (!instance
       ? axios.create({
         baseURL

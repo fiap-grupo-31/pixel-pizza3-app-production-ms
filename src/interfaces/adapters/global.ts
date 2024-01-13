@@ -1,5 +1,5 @@
 export const Global = {
-  error: function (data: string | null, statusCode?: any | null): object {
+  error: function (data: string | null, statusCode?: any): object {
     if (data === null) {
       return {
         statusCode: statusCode || 200,

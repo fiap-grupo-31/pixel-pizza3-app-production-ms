@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-throw-literal */
 /* eslint-disable prefer-promise-reject-errors */
 import { Production } from '../../domain/entities/Production';
 import { type ProductionGatewayInterface } from '../../domain/interfaces/ProductionGatewayInterface';
@@ -48,7 +49,7 @@ class ProductionUseCases {
         payments.updated_at
       );
     } catch (error) {
-      return await Promise.reject('failure insert');
+      throw ('failure insert')
     }
   }
 
@@ -81,8 +82,7 @@ class ProductionUseCases {
 
       return production
     } catch (error) {
-      console.log(error)
-      return await Promise.reject('failure update');
+      throw ('failure update')
     }
   }
 }
