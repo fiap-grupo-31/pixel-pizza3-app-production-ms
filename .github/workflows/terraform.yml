@@ -116,7 +116,7 @@ jobs:
         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
         helm repo add kong https://charts.konghq.com
         helm repo update
-        if ! helm install kong kong/kong --namespace kong --values ./values.yaml; then
+        if ! helm install kong kong/kong --namespace kong --values ./k8s/values.yaml; then
           echo "Helm install failed, continuing..."
           exit 0
         fi
