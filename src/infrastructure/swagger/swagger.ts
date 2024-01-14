@@ -7,7 +7,27 @@ const options = {
     info: {
       title: 'API Documentation',
       version: '1.0.0'
-    }
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          name: 'bearerAuth',
+          in: 'header',
+          bearerFormat: 'JWT',
+          scheme: 'bearer'
+        }
+      }
+    },
+    security: [
+      {
+        bearerAuth: []
+      }
+    ],
+    schemes: [
+      'https',
+      'http'
+    ]
   },
   // Coloque o caminho para seus comentários JSDoc aqui
   apis: [`./**/*.${process.env.production ? 'js' : 'ts'}`, 'interfaces/**/*.js']

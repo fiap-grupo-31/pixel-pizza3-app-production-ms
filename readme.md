@@ -137,54 +137,19 @@ Com os requisitos já identificados, configure abaixo no secrets do github.
 ```
 AWS_ACCESS_KEY = "xxxxxxxxxxxxxxxxx"
 AWS_SECRET_KEY = "xxxxxxxxxxxxxxxxx"
+SONAR_HOST_URL = "xxxxxxxxxxxxxxxxx"
+SONAR_TOKEN    = "xxxxxxxxxxxxxxxxx"
 ```
 
 ## Uso
 
-Com os requisitos já identificados, configure abaixo no secrets do github.
+Com os requisitos já identificados, as variáveis configuradas no secrets do github.
 
-```
-   runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    needs:
-      - run-tests
+Efetue o Pull Request com a branch master para executar o processo de
 
-    steps:
-    - name: Checkout do repositório
-      uses: actions/checkout@v2
-
-    - name: Configurando a AWS Credentials Action para o GitHub Actions
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
-      
-    - name: Login em Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Instala dependencias
-      run: |
-        npm install
-
-    - name: Gera versão de distribuição
-      run: |
-        npm run build
-
-    - name: Build do Dockerfile, criação da Tag e Push Image em Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      run: |
-        docker image build \
-        --tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest \
-        --tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.SHORT_SHA }} \
-        .
-        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
-        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.SHORT_SHA }}
-        echo ${{ steps.login-ecr.outputs.registry }}
-```
+- Teste
+- Sonarqube
+- Deploy
 
 ### Execução do projeto
 

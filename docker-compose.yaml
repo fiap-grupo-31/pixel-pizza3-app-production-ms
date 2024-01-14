@@ -18,28 +18,31 @@ services:
     networks:
       pixel:
 
-  #app:
-  #  build:
-  #    context: .
-  #    dockerfile: Dockerfile
-  #  restart: always
-  #  ports:
-  #    - "8081:8080"
-  #  environment:
-  #    MYSQL_DB_HOST: localhost
-  #    MYSQL_DB_PORT: 3306
-  #    MYSQL_DB_DATABASE: db
-  #    MYSQL_DB_USER: user
-  #    MYSQL_DB_PASS: password
-  #    DNS_PUBLIC: 'http://localhost:8081'
-  #    MELI_USER_ID: 157842011
-  #    MELI_POSID: FIAPPOS1ID001EI
-  #    MELI_TOKEN: 
-  #    MELI_WEBHOOK: https://webhook.site/ceba216a-b6cf-4df2-ace7-28c2313b7e06
-  #  depends_on:
-  #    - db
-  #  networks:
-  #      pixel:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      MYSQL_DB_HOST: db
+      MYSQL_DB_PORT: 3306
+      MYSQL_DB_DATABASE: db
+      MYSQL_DB_USER: user
+      MYSQL_DB_PASS: password
+      DNS_PUBLIC: 'http://localhost:8000'
+      MELI_USER_ID: 157842011
+      MELI_POSID: FIAPPOS1ID001EI
+      MELI_TOKEN: 
+      MELI_WEBHOOK: https://webhook.site/ceba216a-b6cf-4df2-ace7-28c2313b7e06
+      API_ORDER_BASEURL: http://localhost:8000/api/v1.0/
+      API_PAYMENT_BASEURL: http://localhost:8000/api/v1.0/
+      API_PRODUCTION_BASEURL: http://localhost:8000/api/v1.0/
+    depends_on:
+      - db
+    networks:
+        pixel:
 
 networks:
     pixel:
