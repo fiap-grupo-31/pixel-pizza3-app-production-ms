@@ -1,7 +1,6 @@
 import { ProductionUseCases } from './Production';
 import { Production } from '../../domain/entities';
 
-// Mock para PaymentsGatewayInterface
 const mockProductionGateway = {
   findAll: jest.fn(),
   find: jest.fn(),
@@ -25,12 +24,10 @@ const mockPaymentDataDefault = {
 };
 
 describe('Produção', () => {
-  // Limpa os mocks após cada teste
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  // Teste para getPaymentsAll
   it('Deve retornar todos os pedidos em produção', async () => {
     mockProductionGateway.findAll.mockResolvedValueOnce([
     ]);
@@ -41,7 +38,6 @@ describe('Produção', () => {
     ]);
   });
 
-  // Teste para getPaymentsByReference Vazia
   it('Deve retornar uma lista vazia de pedidos em produção', async () => {
     mockProductionGateway.find.mockResolvedValueOnce([
     ]);
@@ -55,7 +51,6 @@ describe('Produção', () => {
     ]);
   });
 
-  // Teste para getPaymentsByReference com conteúdo
   it('Deve retornar um pedido por referencia ( status )', async () => {
     mockProductionGateway.find.mockResolvedValueOnce([
     ]);
@@ -72,7 +67,6 @@ describe('Produção', () => {
     expect(result).toEqual([]);
   });
 
-  // Teste para getPaymentsById
   it('Deve retornar um pedido em produção por id', async () => {
     const mockPayment = {
     };
@@ -86,7 +80,6 @@ describe('Produção', () => {
     expect(result).toEqual(mockPayment);
   });
 
-  // Teste para setPayment
   it('Deve retornar um pedido para produção', async () => {
     const mockPaymentData = mockPaymentDataDefault;
     mockProductionGateway.persist.mockResolvedValueOnce(mockPaymentData);
@@ -110,7 +103,6 @@ describe('Produção', () => {
 
   it('Deve retornar uma exceção ao tentar inserir um pedido', async () => {
     const expectedError = 'failure insert';
-    // Simular uma falha ao persistir o pagamento
     mockProductionGateway.persist.mockRejectedValueOnce(expectedError);
 
     try {
@@ -121,14 +113,12 @@ describe('Produção', () => {
         'WAITING',
         mockProductionGateway
       );
-      // Se chegar aqui, o teste falhará
       expect(true).toBe(false); // Garante que o teste falhe se o código chegar aqui
     } catch (error: any) {
       expect(error.message).toBe('failure insert');
     }
   });
 
-  // Teste para updatePayment
   it('Deve atualizar o pedido em produção', async () => {
     const mockUpdatedPayment = {
       id: 2,
@@ -159,7 +149,6 @@ describe('Produção', () => {
     expect(result).toEqual(new Production(2, '123', '2', 'teste', 'DONE', '', ''));
   });
 
-  // Teste para updatePayment
   it('Deve retornar uma exceção atualizar o pedido em produção com status de production invalido', async () => {
     jest.spyOn(mockOrderApiAdapter, 'updateOrder').mockResolvedValueOnce(true);
 

@@ -50,7 +50,7 @@ jobs:
 
     - name: Valida Quality Gate status do SonarQube
       run: |
-        if [ "$(curl -s -u ${{ secrets.SONAR_TOKEN }}: ${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=fiap-techg31_pixel-pizza3-app-production-ms | jq -r '.projectStatus.status')" != "OK" ]; then
+        if [ "$(curl -s -u ${{ secrets.SONAR_TOKEN }}: ${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=pixel-pizza3-app-production-ms | jq -r '.projectStatus.status')" != "OK" ]; then
           echo "Quality Gate failed. Exiting with non-zero status."
           exit 1
         fi

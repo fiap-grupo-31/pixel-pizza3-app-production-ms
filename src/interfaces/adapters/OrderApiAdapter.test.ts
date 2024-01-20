@@ -1,9 +1,9 @@
 import axios, { type AxiosInstance } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { OrderApiAdapter } from './OrderApiAdapter'; // Importe a classe que será testada
+import { OrderApiAdapter } from './OrderApiAdapter';
 
 describe('OrderApiAdapter', () => {
-  const baseURL = 'http://192.168.0.128:8000/api/v1.0/admin'; // Substitua pela URL correta da API
+  const baseURL = 'http://192.168.0.128:8000/api/v1.0/admin';
 
   let orderApiAdapter: OrderApiAdapter;
   let axiosInstanceMock: AxiosInstance;
