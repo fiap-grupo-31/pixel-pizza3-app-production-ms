@@ -24,8 +24,7 @@ export class MysqldbConnection implements DbConnection {
       MYSQL_DB_PORT,
       MYSQL_DB_DATABASE,
       MYSQL_DB_USER,
-      MYSQL_DB_PASS,
-      MYSQL_DB_STRING_CLOUD
+      MYSQL_DB_PASS
     } = process.env;
 
     sequelize = new Sequelize({
