@@ -40,7 +40,12 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-
+    - name: Efetua instalação de dependências
+      run: |
+        npm install
+    - name: Executa teste da aplicação
+      run: |
+        npm run test --coverage
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@master
       continue-on-error: false
