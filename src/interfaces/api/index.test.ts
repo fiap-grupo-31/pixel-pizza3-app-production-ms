@@ -7,11 +7,20 @@ jest.mock('../controllers/production');
 describe('FastfoodApp', () => {
   let fastfoodApp: FastfoodApp;
   let mockDbConnection: any;
+  let _rabbitMqService: any;
 
   beforeAll(() => {
     mockDbConnection = {};
     process.env.PORT = '9010';
-    fastfoodApp = new FastfoodApp(mockDbConnection);
+
+    _rabbitMqService = {
+      _rabbitMqService: {
+        sendMessage: async function (queue: any, data: any) {
+          return true;
+        }
+      }
+    }
+    fastfoodApp = new FastfoodApp(mockDbConnection, _rabbitMqService);
     fastfoodApp.start();
   });
 

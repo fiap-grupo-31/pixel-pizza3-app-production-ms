@@ -22,7 +22,7 @@ describe('FastfoodApp', () => {
         throw new Error('Function not implemented.');
       }
     };
-    fastfoodApp = new FastfoodApp(mockDbConnection);
+    fastfoodApp = new FastfoodApp(mockDbConnection, null);
   });
 
   it('deve iniciar o aplicativo corretamente', () => {

@@ -56,7 +56,7 @@ class ProductionUseCases {
   static async updateProduction (
     id: bigint,
     status: string,
-    orderApiAdapter: OrderApiAdapter,
+    _rabbitMqService: any,
     paymentsGateway: ProductionGatewayInterface
   ): Promise<Production | null> {
     const entity = new Production(
@@ -79,9 +79,17 @@ class ProductionUseCases {
       );
 
       const production: any = await paymentsGateway.findId(id);
+      try {
+        if (production?.orderId) {
+          const msg = await _rabbitMqService.sendMessage('orders', {
+            event: 'statusOrder',
+            orderId: production.orderId,
+            status
+          })
+          console.log(msg)
+        }
+      } catch (error) {
 
-      if (production?.orderId) {
-        await orderApiAdapter.updateOrder(production.orderId, status)
       }
 
       return production

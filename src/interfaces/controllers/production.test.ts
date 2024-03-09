@@ -82,7 +82,7 @@ describe('ProductionController', () => {
 
       const result = await ProductionController.updateProduction(
         BigInt(2),
-        'DONE',
+        'DONE', {},
         mockDbConnection);
 
       expect(result).toBeDefined();
@@ -95,7 +95,7 @@ describe('ProductionController', () => {
       mockDbConnection.findId.mockResolvedValueOnce(new Error('error'));
       const result = await ProductionController.updateProduction(
         BigInt(2),
-        '',
+        '',{},
         mockDbConnection);
 
       // Assertions
