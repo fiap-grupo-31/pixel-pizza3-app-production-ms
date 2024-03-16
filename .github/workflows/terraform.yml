@@ -134,9 +134,12 @@ jobs:
         echo $ENDPOINT_ECR
         export ENDPOINT_KONG=$(kubectl get svc -n kong -o=jsonpath='{range .items[?(@.metadata.name=="kong-kong-proxy")]}{.status.loadBalancer.ingress[0].hostname}{"\n"}{end}')
         echo $ENDPOINT_KONG
+        export ENDPOINT_RABBITMQ=$(aws mq list-brokers --query "BrokerSummaries[?BrokerName=='pixels-rabbitmq-broker']" | jq -r '.[0].BrokerId' | xargs -I {} aws mq describe-broker --broker-id {} --query 'BrokerInstances[0].Endpoints' --output text | sed 's/^amqps:\/\///')
+        echo $ENDPOINT_RABBITMQ
         cp k8s/configmap.tmpl.yaml k8s/configmap.yaml
         sed -i 's|REPLACE_DB_STRING_CLOUD|'"$ENDPOINT_DB"'|g' k8s/configmap.yaml
         sed -i 's|REPLACE_ROUTE_APIGATEWAY|'"$ENDPOINT_KONG"'|g' k8s/configmap.yaml
+        sed -i 's|REPLACE_ROUTE_RABBITMQ|'"$ENDPOINT_RABBITMQ"'|g' k8s/configmap.yaml
         cat k8s/configmap.yaml
         cp k8s/deployment.tmpl.yaml k8s/deployment.yaml
         sed -i 's|ENDPOINT_ECR|'"$ENDPOINT_ECR"'|g' k8s/deployment.yaml

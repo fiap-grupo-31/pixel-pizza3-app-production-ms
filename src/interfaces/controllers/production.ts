@@ -146,10 +146,10 @@ export class ProductionController {
   static async updateProduction (
     id: bigint,
     status: string,
+    _rabbitMqService: any,
     dbconnection: DbConnection
   ): Promise<string> {
     const productionGateway = new ProductionGateway(dbconnection);
-    const orderApiAdapter = new OrderApiAdapter(process.env.API_ORDER_BASEURL ?? '', false);
 
     if (!id) return JSON.stringify(Global.error('id invalid'));
     if (!status) return JSON.stringify(Global.error('status invalid'));
@@ -157,7 +157,7 @@ export class ProductionController {
     const production = await ProductionUseCases.updateProduction(
       id,
       status,
-      orderApiAdapter,
+      _rabbitMqService,
       productionGateway
     )
       .then((data) => {
