@@ -24,9 +24,9 @@ export class FastfoodApp {
   }
 
   start (): void {
-    this._app.use(bodyParser.json());
-    this._app.disable('x-powered-by');
     this._app.use(cors());
+    this._app.use(bodyParser.json({ limit: '10mb' }));
+    this._app.disable('x-powered-by');
     this._app.use((err: any, req: Request, res: Response, next: express.NextFunction) => {
       res.setHeader('Connection', 'keep-alive');
       res.setHeader('Keep-Alive', 'timeout=30');
